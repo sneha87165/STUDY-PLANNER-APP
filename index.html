@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus | Professional Study Planner</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary: #ec4899;
+        --card-bg: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --border: #e5e7eb;
+        --shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --danger: #ef4444;
+        --success: #10b981;
+        --radius: 12px;
+      }
+
+      [data-theme="dark"] {
+        --card-bg: #374151;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border: #4b5563;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      body {
+        background-image:
+          linear-gradient(
+            135deg,
+            rgba(224, 231, 255, 0.95) 0%,
+            rgba(243, 232, 255, 0.95) 100%
+          ),
+          url("https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=2070&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--text-main);
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: center;
+      }
+      [data-theme="dark"] body {
+        background-image:
+          linear-gradient(
+            135deg,
+            rgba(17, 24, 39, 0.95) 0%,
+            rgba(31, 41, 55, 0.95) 100%
+          ),
+          url("https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=2070&auto=format&fit=crop");
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+      }
+
+      /* Header */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        font-weight: 700;
+        font-size: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      h1 i {
+        color: var(--primary);
+      }
+
+      .theme-toggle {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        font-size: 1.2rem;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.05);
+      }
+
+      /* Input Section */
+      .input-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border);
+      }
+
+      .form-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--card-bg);
+        color: var(--text-main);
+        font-size: 1rem;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      }
+
+      #durationInput {
+        flex: 0 1 140px;
+      }
+
+      .btn-add {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-add:hover {
+        background: var(--primary-hover);
+      }
+
+      /* Dashboard */
+      .dashboard-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border);
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .progress-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        background: var(--border);
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%; /* Updated by JS */
+        background: var(--primary);
+        border-radius: 5px;
+        transition: width 0.5s ease-in-out;
+      }
+
+      .next-exam-section {
+        background: rgba(99, 102, 241, 0.05);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      [data-theme="dark"] .next-exam-section {
+        background: rgba(99, 102, 241, 0.1);
+      }
+
+      .next-exam-section .label {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .next-exam-section .subject {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-main);
+      }
+
+      .next-exam-section .date {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      /* List Controls */
+      .list-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      .filter-btn {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--card-bg);
+        color: var(--text-muted);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .filter-btn:hover {
+        background: var(--border);
+        color: var(--text-main);
+      }
+
+      .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* List Section */
+      .study-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .study-card {
+        background: var(--card-bg);
+        padding: 1.25rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 5px solid var(--primary);
+        animation: slideIn 0.4s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card-content {
+        flex: 1;
+      }
+
+      .subject-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .exam-info {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .duration-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: 8px;
+        padding-left: 8px;
+        border-left: 1px solid var(--border);
+      }
+
+      .days-badge {
+        background: #e0e7ff;
+        color: var(--primary);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-left: 8px;
+      }
+
+      [data-theme="dark"] .days-badge {
+        background: rgba(99, 102, 241, 0.2);
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-action {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 8px;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .btn-check {
+        color: var(--border);
+      }
+
+      .btn-check:hover {
+        color: var(--success);
+        background: rgba(16, 185, 129, 0.1);
+      }
+
+      .btn-timer {
+        color: var(--text-muted);
+      }
+
+      .btn-timer:hover {
+        color: var(--primary);
+        background: rgba(99, 102, 241, 0.1);
+      }
+
+      .btn-delete {
+        color: var(--text-muted);
+      }
+
+      .btn-delete:hover {
+        color: var(--danger);
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+      /* Completed State */
+      .study-card.completed {
+        border-left-color: var(--success);
+        opacity: 0.7;
+      }
+
+      .study-card.completed .subject-title {
+        text-decoration: line-through;
+        color: var(--text-muted);
+      }
+
+      .study-card.completed .btn-check {
+        color: var(--success);
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      /* Timer Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+
+      #timerSubject {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-main);
+      }
+
+      #timerDisplay {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .timer-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 480px) {
+        .form-group {
+          flex-direction: column;
+        }
+        .btn-add {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1><i class="fas fa-graduation-cap"></i> Study Planner</h1>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle Dark Mode"
+        >
+          <i class="fas fa-moon"></i>
+        </button>
+      </header>
+
+      <!-- Input Section -->
+      <div class="input-card">
+        <form id="studyForm" class="form-group">
+          <input
+            type="text"
+            id="subjectInput"
+            placeholder="Subject / Exam Name"
+            required
+            autocomplete="off"
+          />
+          <input type="date" id="dateInput" required />
+          <input
+            type="number"
+            id="durationInput"
+            placeholder="Duration (min)"
+            min="1"
+          />
+          <button type="submit" class="btn-add">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </form>
+      </div>
+
+      <!-- Dashboard Section -->
+      <div class="dashboard-card">
+        <div class="dashboard-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="totalTasksStat">0</div>
+            <div class="stat-label">Total Subjects</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="completedTasksStat">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="pendingTasksStat">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-info">
+            <label for="completionProgress">Progress</label>
+            <span id="progressPercentage">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="completionProgress"></div>
+          </div>
+        </div>
+        <div class="next-exam-section" id="nextExamSection">
+          <div class="label">Nothing scheduled yet.</div>
+        </div>
+      </div>
+
+      <!-- List Controls -->
+      <div class="list-controls">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="pending">Pending</button>
+        <button class="filter-btn" data-filter="completed">Completed</button>
+      </div>
+
+      <!-- List Section -->
+      <div id="studyList" class="study-list">
+        <!-- Items injected here via JS -->
+      </div>
+    </div>
+
+    <!-- Timer Modal -->
+    <div id="timerModal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <button class="modal-close" id="closeTimerModal">&times;</button>
+        <h3 id="timerSubject"></h3>
+        <div id="timerDisplay">00:00</div>
+        <div class="timer-controls">
+          <button id="timerPauseResume" class="btn-action" title="Pause/Resume">
+            <i class="fas fa-pause"></i>
+          </button>
+          <button id="timerReset" class="btn-action" title="Reset">
+            <i class="fas fa-undo"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // DOM Elements
+      const studyForm = document.getElementById("studyForm");
+      const subjectInput = document.getElementById("subjectInput");
+      const dateInput = document.getElementById("dateInput");
+      const durationInput = document.getElementById("durationInput");
+      const studyList = document.getElementById("studyList");
+      const themeToggle = document.getElementById("themeToggle");
+      const totalTasksEl = document.getElementById("totalTasksStat");
+      const completedTasksEl = document.getElementById("completedTasksStat");
+      const pendingTasksEl = document.getElementById("pendingTasksStat");
+      const progressPercentageEl =
+        document.getElementById("progressPercentage");
+      const completionProgressEl =
+        document.getElementById("completionProgress");
+      const nextExamSectionEl = document.getElementById("nextExamSection");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+      const timerModal = document.getElementById("timerModal");
+      const closeTimerModalBtn = document.getElementById("closeTimerModal");
+      const timerSubjectEl = document.getElementById("timerSubject");
+      const timerDisplayEl = document.getElementById("timerDisplay");
+      const timerPauseResumeBtn = document.getElementById("timerPauseResume");
+      const timerResetBtn = document.getElementById("timerReset");
+
+      // State
+      let studyItems = JSON.parse(localStorage.getItem("studyItems")) || [];
+      let isDarkMode = localStorage.getItem("theme") === "dark";
+      let currentFilter = "all";
+      let timerInterval = null;
+      let timeLeft = 0;
+      let isTimerPaused = false;
+      let currentTimerId = null;
+      const alarmSound = new Audio(
+        "https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3",
+      );
+
+      // Initialization
+      document.addEventListener("DOMContentLoaded", () => {
+        applyTheme();
+        renderItems();
+
+        // Set min date to today
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.setAttribute("min", today);
+
+        filterBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            filterBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            renderItems();
+          });
+        });
+
+        closeTimerModalBtn.addEventListener("click", closeTimer);
+        timerPauseResumeBtn.addEventListener("click", () => {
+          isTimerPaused = !isTimerPaused;
+          timerPauseResumeBtn.innerHTML = isTimerPaused
+            ? '<i class="fas fa-play"></i>'
+            : '<i class="fas fa-pause"></i>';
+        });
+        timerResetBtn.addEventListener("click", () => {
+          const item = studyItems.find((i) => i.id === currentTimerId);
+          if (item) {
+            timeLeft = item.duration * 60;
+            resetTimerState();
+          }
+        });
+      });
+
+      // Theme Handling
+      themeToggle.addEventListener("click", () => {
+        isDarkMode = !isDarkMode;
+        localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+        applyTheme();
+      });
+
+      function applyTheme() {
+        const icon = themeToggle.querySelector("i");
+        if (isDarkMode) {
+          document.body.setAttribute("data-theme", "dark");
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+        } else {
+          document.body.removeAttribute("data-theme");
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+        }
+      }
+
+      // Form Handling
+      studyForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const newItem = {
+          id: Date.now(),
+          subject: subjectInput.value,
+          date: dateInput.value,
+          duration: parseInt(durationInput.value) || 30, // Default 30 min
+          completed: false,
+        };
+
+        studyItems.push(newItem);
+        saveAndRender();
+        studyForm.reset();
+      });
+
+      // Logic Functions
+      function calculateDaysLeft(targetDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const examDate = new Date(targetDate);
+        const diffTime = examDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      }
+
+      function getDaysBadge(days) {
+        if (days < 0)
+          return `<span class="days-badge" style="color:var(--danger); background: rgba(239,68,68,0.1)">Overdue</span>`;
+        if (days === 0)
+          return `<span class="days-badge" style="color:var(--danger); background: rgba(239,68,68,0.1)">Today!</span>`;
+        if (days === 1)
+          return `<span class="days-badge" style="color:var(--secondary); background: rgba(236,72,153,0.1)">Tomorrow</span>`;
+
+        let color = days <= 3 ? "var(--secondary)" : "var(--primary)";
+        return `<span class="days-badge" style="color:${color}">${days} days left</span>`;
+      }
+
+      function toggleComplete(id) {
+        studyItems = studyItems.map((item) => {
+          if (item.id === id) {
+            return { ...item, completed: !item.completed };
+          }
+          return item;
+        });
+        saveAndRender();
+      }
+
+      function deleteItem(id) {
+        if (confirm("Delete this subject?")) {
+          studyItems = studyItems.filter((item) => item.id !== id);
+          saveAndRender();
+        }
+      }
+
+      function saveAndRender() {
+        localStorage.setItem("studyItems", JSON.stringify(studyItems));
+        renderItems();
+      }
+
+      // Timer Functions
+      function startTimer(id) {
+        const item = studyItems.find((i) => i.id === id);
+        if (!item) return;
+
+        currentTimerId = id;
+        timeLeft = item.duration * 60;
+
+        timerSubjectEl.textContent = item.subject;
+        resetTimerState();
+        timerModal.style.display = "flex";
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          if (!isTimerPaused) {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+              clearInterval(timerInterval);
+              alarmSound.play();
+              timerDisplayEl.textContent = "Done!";
+            }
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = (timeLeft % 60).toString().padStart(2, "0");
+        timerDisplayEl.textContent = `${minutes}:${seconds}`;
+      }
+
+      function closeTimer() {
+        clearInterval(timerInterval);
+        timerModal.style.display = "none";
+      }
+
+      function resetTimerState() {
+        isTimerPaused = false;
+        timerPauseResumeBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        updateTimerDisplay();
+      }
+
+      function renderDashboard() {
+        const totalCount = studyItems.length;
+        const completedCount = studyItems.filter(
+          (item) => item.completed,
+        ).length;
+        const pendingCount = totalCount - completedCount;
+        const progress =
+          totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+        totalTasksEl.textContent = totalCount;
+        completedTasksEl.textContent = completedCount;
+        pendingTasksEl.textContent = pendingCount;
+
+        progressPercentageEl.textContent = `${Math.round(progress)}%`;
+        completionProgressEl.style.width = `${progress}%`;
+
+        // Find next upcoming exam
+        const upcomingExams = studyItems
+          .filter((item) => !item.completed)
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        if (upcomingExams.length > 0) {
+          const nextExam = upcomingExams[0];
+          const daysLeft = calculateDaysLeft(nextExam.date);
+          const dateFormatted = new Date(nextExam.date).toLocaleDateString(
+            "en-US",
+            { month: "short", day: "numeric" },
+          );
+
+          nextExamSectionEl.innerHTML = `
+            <div class="label"><i class="fas fa-bell"></i> NEXT UP</div>
+            <div class="subject">${nextExam.subject}</div>
+            <div class="date">${dateFormatted} (${getDaysBadge(daysLeft).replace(/<[^>]*>?/gm, "")})</div>
+        `;
+        } else if (totalCount > 0 && pendingCount === 0) {
+          nextExamSectionEl.innerHTML = `
+            <div class="label" style="color: var(--success);"><i class="fas fa-check-circle"></i> ALL DONE!</div>
+            <div class="subject">You've completed all your subjects.</div>
+        `;
+        } else {
+          nextExamSectionEl.innerHTML = `<div class="label">Nothing scheduled yet.</div>`;
+        }
+      }
+
+      function renderItems() {
+        renderDashboard();
+
+        studyList.innerHTML = "";
+
+        let filteredItems = studyItems;
+        if (currentFilter === "pending") {
+          filteredItems = studyItems.filter((item) => !item.completed);
+        } else if (currentFilter === "completed") {
+          filteredItems = studyItems.filter((item) => item.completed);
+        }
+
+        // Sort: Incomplete first, then by date
+        const sortedItems = [...filteredItems].sort((a, b) => {
+          if (a.completed === b.completed) {
+            return new Date(a.date) - new Date(b.date);
+          }
+          return a.completed ? 1 : -1;
+        });
+
+        if (studyItems.length === 0) {
+          studyList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No exams added yet. Time to plan!</p>
+                    </div>
+                `;
+          return;
+        }
+
+        sortedItems.forEach((item) => {
+          const daysLeft = calculateDaysLeft(item.date);
+          const dateFormatted = new Date(item.date).toLocaleDateString(
+            "en-US",
+            { month: "short", day: "numeric", year: "numeric" },
+          );
+
+          const card = document.createElement("div");
+          card.className = `study-card ${item.completed ? "completed" : ""}`;
+
+          card.innerHTML = `
+                    <div class="card-content">
+                        <div class="subject-title">${item.subject}</div>
+                        <div class="exam-info">
+                            <span><i class="far fa-calendar-alt"></i> ${dateFormatted}</span>
+                            ${!item.completed ? getDaysBadge(daysLeft) : ""}
+                            <span class="duration-info"><i class="far fa-hourglass-half"></i> ${item.duration} min</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-action btn-timer" onclick="startTimer(${item.id})" title="Start Timer">
+                            <i class="fas fa-play-circle"></i>
+                        </button>
+                        <button class="btn-action btn-check" onclick="toggleComplete(${item.id})" title="Mark Complete">
+                            <i class="fas ${
+                              item.completed ? "fa-check-circle" : "fa-circle"
+                            }"></i>
+                        </button>
+                        <button class="btn-action btn-delete" onclick="deleteItem(${item.id})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+          studyList.appendChild(card);
+        });
+      }
+    </script>
+  </body>
+</html>
